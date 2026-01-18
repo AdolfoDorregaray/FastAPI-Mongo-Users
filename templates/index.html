@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA | Gestión Corporativa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #334155; }
+        .navbar { background-color: #0f172a !important; border-bottom: 3px solid #3b82f6; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .form-control, .btn { border-radius: 8px; padding: 0.6rem 1rem; }
+        .btn-primary { background-color: #2563eb; border: none; }
+        .btn-danger { background-color: #dc2626; border: none; }
+        .table th { font-weight: 600; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .badge-id { font-family: 'Courier New', monospace; background: #f1f5f9; color: #475569; }
+        .text-dni { color: #2563eb; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark mb-5">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand d-flex align-items-center fw-bold">
+                <i class="bi bi-shield-check text-info me-2 fs-4"></i> SGA CORPORATIVO
+            </span>
+            <div class="text-white-50 small">Panel Administrativo v2.0</div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+        {% if error == 'dni_duplicado' %}
+        <div class="alert alert-danger d-flex align-items-center border-0 shadow-sm mb-4" role="alert">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i>
+            <div><strong>Error:</strong> El DNI ya se encuentra registrado.</div>
+            <button type="button" class="btn-close ms-auto" onclick="window.location.href='/'"></button>
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <div class="col-xl-3 col-lg-4">
+                <div class="card p-2">
+                    <div class="card-header bg-white border-0"><h6 class="mb-0 fw-bold">Registro de Personal</h6></div>
+                    <div class="card-body">
+                        <form action="/web/crear" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Nombre</label>
+                                <input type="text" name="nombre" class="form-control bg-light border-0" placeholder="Ej. Juan" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Apellidos</label>
+                                <input type="text" name="apellidos" class="form-control bg-light border-0" placeholder="Ej. Pérez" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">DNI</label>
+                                <input type="text" name="dni" class="form-control bg-light border-0" placeholder="Documento único" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-semibold">Fecha de Nacimiento</label>
+                                <input type="date" name="fecha_nacimiento" class="form-control bg-light border-0" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-person-plus-fill me-2"></i>Registrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-9 col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <h6 class="mb-0 fw-bold">Base de Datos</h6>
+                        <form action="/" method="GET" class="d-flex" style="max-width: 350px; width: 100%;">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control bg-light border-0" placeholder="Búsqueda" value="{{ request.query_params.get('search', '') }}">
+                                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                                <a href="/" class="btn btn-outline-secondary border-0"><i class="bi bi-arrow-counterclockwise"></i></a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">ID Mongo</th>
+                                    <th>Nombres y Apellidos</th>
+                                    <th>DNI</th>
+                                    <th>Nacimiento</th>
+                                    <th>Alta</th>
+                                    <th>Act.</th>
+                                    <th class="text-end pe-4">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in usuarios %}
+                                <tr>
+                                    <td class="ps-4"><span class="badge badge-id p-2 small">{{ u._id }}</span></td>
+                                    <td><div class="fw-semibold">{{ u.nombre }}</div><div class="small text-muted">{{ u.apellidos }}</div></td>
+                                    <td><span class="text-dni">{{ u.dni }}</span></td>
+                                    <td class="small">{{ u.fecha_nacimiento }}</td>
+                                    <td class="text-muted small">{{ u.created.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td class="text-muted small">{{ u.updated.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-light text-primary border-0" data-bs-toggle="modal" data-bs-target="#modalEdit{{ u._id }}"><i class="bi bi-pencil-fill"></i></button>
+                                        <button class="btn btn-sm btn-light text-danger border-0" data-bs-toggle="modal" data-bs-target="#modalDelete{{ u._id }}"><i class="bi bi-trash3-fill"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for u in usuarios %}
+    <div class="modal fade" id="modalEdit{{ u._id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0">
+                <form action="/web/editar/{{ u._id }}" method="POST">
+                    <div class="modal-header border-0 pb-0 pt-4 px-4">
+                        <h5 class="fw-bold">Editar Usuario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3"><label class="form-label small fw-bold">Nombres</label><input type="text" name="nombre" class="form-control" value="{{ u.nombre }}" required></div>
+                        <div class="mb-3"><label class="form-label small fw-bold">Apellidos</label><input type="text" name="apellidos" class="form-control" value="{{ u.apellidos }}" required></div>
+                        <div class="mb-3"><label class="form-label small fw-bold">DNI</label><input type="text" name="dni" class="form-control" value="{{ u.dni }}" required></div>
+                    </div>
+                    <div class="modal-footer border-0 p-4">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary px-4">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDelete{{ u._id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-body p-4 text-center">
+                    <i class="bi bi-exclamation-circle text-danger fs-1 mb-3 d-block"></i>
+                    <h5 class="fw-bold mb-2">¿Confirmar eliminación?</h5>
+                    <p class="small text-muted mb-4">Esta acción borrará permanentemente a <strong>{{ u.nombre }} {{ u.apellidos }}</strong> del sistema.</p>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-light w-100 fw-semibold" data-bs-dismiss="modal">No, cancelar</button>
+                        <a href="/web/eliminar/{{ u._id }}" class="btn btn-danger w-100 fw-semibold">Sí, eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
