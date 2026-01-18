@@ -1,5 +1,12 @@
-__pycache__/
-*.pyc
-.env
+# Python bytecode
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
 venv/
+env/
+
+# IDEs
 .vscode/
+.idea/
