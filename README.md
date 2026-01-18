@@ -12,13 +12,13 @@ Sistema corporativo de gestión de personal desarrollado con **FastAPI** y **Mon
 ## 📸 Capturas de Pantalla
 
 ### Panel Principal
-<img width="1912" height="882" alt="image" src="https://github.com/user-attachments/assets/14bd8eac-3936-4d08-8b80-d2163b33c31a" />
+<img width="1909" height="929" alt="image" src="https://github.com/user-attachments/assets/1d2bfeb2-a154-4fb8-87eb-b3df16d9b785" />
 
 ### Edición de Usuarios
-<img width="1914" height="896" alt="image" src="https://github.com/user-attachments/assets/eb7f1bc9-db39-4246-a3f4-a69a529d2c75" />
+<img width="1914" height="880" alt="image" src="https://github.com/user-attachments/assets/ab2efedf-0ef7-4f47-bb96-18d5adf7e25c" />
 
 ### Confirmación de Seguridad
-<img width="1912" height="932" alt="image" src="https://github.com/user-attachments/assets/47bb948e-a1ec-4246-9af8-9706d6aa2d2c" />
+<img width="1911" height="927" alt="image" src="https://github.com/user-attachments/assets/ad3adf1d-c09c-4154-9840-0ed170507e49" />
 
 ## 🛠️ Tecnologías
 * **Backend:** Python 3.x, FastAPI, Uvicorn.
